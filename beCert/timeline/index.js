@@ -17,11 +17,11 @@ app.get('/', (req, res) => {
 
 // API endpoint
 app.get('/api/:date?', (req, res) => {
-  const dateParam = req.params.date;
-
+  let dateParam = req.params.date;
   let date;
-  if (!dateParam) {
-    // If no date parameter, use the current date
+
+  // If no dateParam or it's an empty string, use the current date
+  if (!dateParam || dateParam.trim() === '') {
     date = new Date();
   } else if (!isNaN(dateParam)) {
     // If it's numeric, parse as a timestamp
@@ -31,7 +31,7 @@ app.get('/api/:date?', (req, res) => {
     date = new Date(dateParam);
   }
 
-  // Validate the date
+  // Check for invalid date
   if (date.toString() === 'Invalid Date') {
     return res.json({ error: 'Invalid Date' });
   }
@@ -41,6 +41,7 @@ app.get('/api/:date?', (req, res) => {
     utc: date.toUTCString(),
   });
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;
