@@ -19,7 +19,8 @@ app.get('/api/:date?', (req, res) => {
   const { date } = req.params;
   
   let resultDate;
-  if (!date || date == '' || date == "") {
+  if (!date || date == '' || date == "" || date == null || date == undefined) {
+    console.log(date)
     // If date is undefined (i.e. "/api" with no param)
     resultDate = new Date();
   } else if (!isNaN(date)) {
