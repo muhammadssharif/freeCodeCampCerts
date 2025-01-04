@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 
 // Middleware to serve static files from the "public" folder
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 // Root route to serve the index.html file
 app.get('/', (req, res) => {
