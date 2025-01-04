@@ -3,8 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const User = require('./models/userModel');
-
 const app = express();
+require('dotenv').config();
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB
