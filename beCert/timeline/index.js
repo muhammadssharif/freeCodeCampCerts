@@ -1,50 +1,43 @@
+// index.js
+// where your node app starts
+
+// init project
 const express = require('express');
-const cors = require('cors');    // <-- add this line
-const path = require('path');
-
 const app = express();
+require("dotenv").config()
+// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+// so that your API is remotely testable by FCC 
+const cors = require('cors');
+app.use(cors({optionsSuccessStatus: 200}));  // some legacy browsers choke on 204
 
-// Enable CORS so freeCodeCamp can access your endpoint
-app.use(cors());
+// http://expressjs.com/en/starter/static-files.html
+app.use(express.static('public'));
 
-// Middleware to serve static files from the "public" folder
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Root route to serve the index.html file
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views', 'index.html'));
-});
-
-app.get('/api/:date?', (req, res) => {
-  const { date } = req.params;
-  
-  let resultDate;
-  if (!date || date == '' || date == "") {
-    // If date is undefined (i.e. "/api" with no param)
-    resultDate = new Date();
-  } else if (!isNaN(date)) {
-    // If numeric, parse as timestamp
-    resultDate = new Date(parseInt(date));
-  } else {
-    // Otherwise, parse as string
-    resultDate = new Date(date);
-  }
-
-  // Check for invalid
-  if (resultDate.toString() === 'Invalid Date') {
-    return res.json({ error: 'Invalid Date' });
-  }
-
-  res.json({
-    unix: resultDate.getTime(),
-    utc: resultDate.toUTCString()
-  });
+// http://expressjs.com/en/starter/basic-routing.html
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
 });
 
 
+// your first API endpoint... 
 
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.get("/api/", function (req, res) {
+  let currentDate = new Date()
+  res.json({"unix": currentDate.getTime(), "utc": `${currentDate}`});
+});
+
+// console.log(date)
+
+app.get("/api/:date?", function (req, res) {
+  let calcDate = isNaN(req.params.date) ? req.params.date : parseInt(req.params.date)
+  console.log(calcDate)
+  let currentDate = new Date(calcDate)
+  let errorResponse = {"error": `${currentDate}`}
+  let validResponse = {"unix": currentDate.getTime(), "utc": `${currentDate.toUTCString()}`}
+  console.log(currentDate)
+  currentDate == "Invalid Date" ? res.json(errorResponse) : res.json(validResponse); 
+});
+// listen for requests :)
+const listener = app.listen(3000, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
 });
