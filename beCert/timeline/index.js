@@ -15,37 +15,32 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-app.get('/api', (req, res) => {
-  const date = new Date();
-  res.json({ unix: date.getTime(), utc: date.toUTCString() });
-});
-
-// API endpoint
 app.get('/api/:date?', (req, res) => {
-  let dateParam = req.params.date;
-  let date;
-
-  // If no dateParam or it's an empty string, use the current date
-  if (!dateParam || dateParam.trim() === '') {
-    date = new Date();
-  } else if (!isNaN(dateParam)) {
-    // If it's numeric, parse as a timestamp
-    date = new Date(parseInt(dateParam));
+  const { date } = req.params;
+  
+  let resultDate;
+  if (!date) {
+    // If date is undefined (i.e. "/api" with no param)
+    resultDate = new Date();
+  } else if (!isNaN(date)) {
+    // If numeric, parse as timestamp
+    resultDate = new Date(parseInt(date));
   } else {
-    // Otherwise, parse as a string
-    date = new Date(dateParam);
+    // Otherwise, parse as string
+    resultDate = new Date(date);
   }
 
-  // Check for invalid date
-  if (date.toString() === 'Invalid Date') {
+  // Check for invalid
+  if (resultDate.toString() === 'Invalid Date') {
     return res.json({ error: 'Invalid Date' });
   }
 
   res.json({
-    unix: date.getTime(),
-    utc: date.toUTCString(),
+    unix: resultDate.getTime(),
+    utc: resultDate.toUTCString(),
   });
 });
+
 
 
 // Start the server
