@@ -1,6 +1,11 @@
 const express = require('express');
+const cors = require('cors');    // <-- add this line
 const path = require('path');
+
 const app = express();
+
+// Enable CORS so freeCodeCamp can access your endpoint
+app.use(cors());
 
 // Middleware to serve static files from the "public" folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -15,27 +20,26 @@ app.get('/api/:date?', (req, res) => {
   const dateParam = req.params.date;
 
   let date;
-
   if (!dateParam) {
     // If no date parameter, use the current date
     date = new Date();
   } else if (!isNaN(dateParam)) {
-    // If the parameter is a valid number, parse it as a timestamp
+    // If it's numeric, parse as a timestamp
     date = new Date(parseInt(dateParam));
   } else {
-    // Otherwise, parse it as a string date
+    // Otherwise, parse as a string
     date = new Date(dateParam);
   }
 
   // Validate the date
   if (date.toString() === 'Invalid Date') {
-    res.json({ error: 'Invalid Date' });
-  } else {
-    res.json({
-      unix: date.getTime(),
-      utc: date.toUTCString(),
-    });
+    return res.json({ error: 'Invalid Date' });
   }
+
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString(),
+  });
 });
 
 // Start the server
