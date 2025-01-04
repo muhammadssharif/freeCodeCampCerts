@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>File Metadata Microservice</title>
+  </head>
+  <body>
+    <h1>File Metadata Microservice</h1>
+    <p>Upload a file, and we'll parse its metadata!</p>
+
+    <!-- The 'encType="multipart/form-data"' is crucial for uploading files -->
+    <form
+      action="/api/fileanalyse"
+      method="POST"
+      encType="multipart/form-data"
+    >
+      <input type="file" name="upfile" />
+      <button type="submit">Upload File</button>
+    </form>
+  </body>
+</html>
